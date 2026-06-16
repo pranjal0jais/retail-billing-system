@@ -1,5 +1,6 @@
-package com.pranjal.auth.dto;
+package com.pranjal.user.dto;
 
+import com.pranjal.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +12,11 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfileResponse {
+public class UserSummaryResponse {
     private Long id;
     private String name;
     private String email;
-    private String role;
+    private Role role;
     private boolean isActive;
     private LocalDateTime createdAt;
 }

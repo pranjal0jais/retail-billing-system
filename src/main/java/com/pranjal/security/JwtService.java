@@ -28,7 +28,7 @@ public class JwtService {
                 .issuedAt(now)
                 .expiresAt(now.plusMillis(expirationMs))
                 .claim("userId", user.getId())
-                .claim("role", user.getRole().name())
+                .claim("role", "ROLE_" + user.getRole().name())
                 .build();
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
 
