@@ -2,6 +2,7 @@ package com.pranjal.category;
 
 import com.pranjal.category.dto.CategoryRequest;
 import com.pranjal.category.dto.CategoryResponse;
+import com.pranjal.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     public CategoryResponse createCategory(CategoryRequest request) {
         if (categoryRepository.existsByName(request.getName())) {
@@ -56,10 +58,15 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long id) {
-        CategoryEntity category = categoryRepository.findById(id)
+        CategoryEntity category = categoryRepository.findByIdAndIsActiveIsTrue(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Category not found")
                 );
+
+        if(productRepository.existsByCategoryIdAndIsActiveIsTrue(id)){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Category has active products");
+        }
+
         category.setActive(false);
         categoryRepository.save(category);
     }

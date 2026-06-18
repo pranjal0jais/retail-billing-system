@@ -11,4 +11,6 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
     List<CategoryEntity> findAllByIsActiveIsTrue();
 
     boolean existsByName(String name);
+
+    Optional<CategoryEntity> findByIdAndIsActiveIsTrue(Long id);
 }
