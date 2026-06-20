@@ -22,3 +22,4 @@ spring:
 
 app:
   low-stock-threshold: 5
+  order-number-prefix: INV
