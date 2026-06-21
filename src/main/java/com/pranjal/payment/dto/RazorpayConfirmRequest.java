@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class RazorpayConfirmRequest {
-    @NotBlank
+    @NotBlank(message = "Razorpay payment id cannot be null")
     private String razorpayPaymentId;
 
-    @NotBlank
+    @NotBlank(message = "Razorpay order id cannot be null")
     private String razorpayOrderId;
 
-    @NotBlank
+    @NotBlank(message = "Razorpay signature cannot be null")
     private String razorpaySignature;
 }

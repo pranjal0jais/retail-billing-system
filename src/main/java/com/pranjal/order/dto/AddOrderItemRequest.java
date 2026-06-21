@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddOrderItemRequest {
-    @NotNull
+    @NotNull(message = "Product id cannot be null")
     private Long productId;
-    @Min(1)
-    @NotNull
+
+    @Min(value = 1, message = "Quantity should be at least 1")
+    @NotNull(message = "Quantity should not be null")
     private Integer quantity;
 }

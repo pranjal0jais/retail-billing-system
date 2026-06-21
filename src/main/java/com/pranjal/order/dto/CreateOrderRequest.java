@@ -12,6 +12,6 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class CreateOrderRequest {
     private Long customerId;
-    @Length(max = 255)
+    @Length(max = 255, message = "Note is too long")
     private String notes;
 }

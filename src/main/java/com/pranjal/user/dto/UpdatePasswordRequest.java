@@ -12,11 +12,11 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdatePasswordRequest {
-    @NotBlank(message = "Password should not be blank")
+    @NotBlank(message = "Old Password should not be blank")
     @Length(min = 6, message = "Minimum password length is 6")
     private String oldPassword;
 
-    @NotBlank(message = "Password should not be blank")
+    @NotBlank(message = "New Password should not be blank")
     @Length(min = 6, message = "Minimum password length is 6")
     private String newPassword;
 }

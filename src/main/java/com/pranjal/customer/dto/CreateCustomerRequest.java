@@ -1,8 +1,6 @@
 package com.pranjal.customer.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,10 +13,11 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @Builder
 public class CreateCustomerRequest {
-    @NotBlank
-    @Length(min = 3, max = 100)
+    @NotBlank(message = "Name cannot be blank")
+    @Length(min = 3, max = 100, message = "Name should be of 3 to 100 characters")
     private String name;
 
-    @Pattern(regexp = "^\\d{10}$")
+    @NotBlank(message = "Phone number cannot be blank")
+    @Pattern(regexp = "^\\d{10}$", message = "Invalid phone number")
     private String phone;
 }

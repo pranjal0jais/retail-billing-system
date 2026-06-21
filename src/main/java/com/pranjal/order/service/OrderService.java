@@ -157,6 +157,11 @@ public class OrderService {
 
     @Transactional
     public OrderResponse confirmOrder(Long orderId, ConfirmOrderRequest request) {
+        if (request.getDiscountType() != null && request.getDiscountValue() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Discount value is required when discount type is provided");
+        }
+
         OrderEntity order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Order not found"));

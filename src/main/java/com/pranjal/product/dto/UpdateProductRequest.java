@@ -16,14 +16,14 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateProductRequest {
-    @NotBlank
-    @Length(min = 3, max = 100)
+    @NotBlank(message = "Name cannot be null")
+    @Length(min = 3, max = 100, message = "Name should be of 3 to 100 characters")
     private String name;
 
-    @NotNull
-    @Min(0)
+    @NotNull(message = "Price cannot be null")
+    @Min(value = 1, message = "Price should be grater than 1")
     private BigDecimal price;
 
-    @NotNull
+    @NotNull(message = "Category id cannot be null")
     private Long categoryId;
 }

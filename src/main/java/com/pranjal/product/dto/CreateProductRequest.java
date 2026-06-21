@@ -17,22 +17,22 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class CreateProductRequest {
 
-    @NotBlank
-    @Length(min = 3, max = 100)
+    @NotBlank(message = "Name cannot be blank")
+    @Length(min = 3, max = 100, message = "Name should be of 3 to 100 characters")
     private String name;
 
-    @NotNull
-    @Min(0)
+    @NotNull(message = "Price cannot be null")
+    @Min(value = 1, message = "Price should be grater than 0")
     private BigDecimal price;
 
-    @NotNull
-    @Min(0)
+    @NotNull(message = "Stock quantity cannot be null")
+    @Min(value = 1, message = "Stock quantity should be grater than 0")
     private Integer stockQuantity;
 
-    @NotBlank
-    @Length(min = 3, max = 100)
+    @NotBlank(message = "SKU cannot be null")
+    @Length(min = 3, max = 100, message = "SKU should be of 3 to 100 characters")
     private String sku;
 
-    @NotNull
+    @NotNull(message = "Category id cannot be null")
     private Long categoryId;
 }

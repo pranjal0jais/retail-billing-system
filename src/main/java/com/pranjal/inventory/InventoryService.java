@@ -18,6 +18,10 @@ public class InventoryService {
     private final ProductRepository productRepository;
 
     public InventoryLogResponse adjustStock(AdjustStockRequest request, Long userId) {
+        if (request.getQuantityChanged() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity changed cannot be zero");
+        }
+
         ProductEntity product = productRepository.findByIdAndIsActiveIsTrue(request.getProductId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Product not found"));

@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class AdjustStockRequest {
-    @NotNull
+    @NotNull(message = "Product id cannot be null")
     private Long productId;
 
-    @NotNull
+    @NotNull(message = "Quantity changed cannot be null")
     private Integer quantityChanged;
 
     private String note;
