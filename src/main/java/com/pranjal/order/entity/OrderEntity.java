@@ -78,7 +78,7 @@ public class OrderEntity {
     }
 
     @PreUpdate
-    public void onUpdate() {
+    protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 }

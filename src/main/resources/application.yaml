@@ -20,6 +20,10 @@ spring:
           secret: ${JWT_SECRET}
           expiration-ms: 86400000
 
+razorpay:
+  key:
+    id: ${RAZORPAY_KEY_ID}
+    secret: ${RAZORPAY_KEY_SECRET}
 app:
   low-stock-threshold: 5
   order-number-prefix: INV
