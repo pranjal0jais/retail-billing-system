@@ -4,6 +4,8 @@ import com.pranjal.customer.dto.CreateCustomerRequest;
 import com.pranjal.customer.dto.CustomerResponse;
 import com.pranjal.customer.dto.UpdateCustomerRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,11 +49,8 @@ public class CustomerService {
     }
 
 
-    public List<CustomerResponse> getAllCustomer() {
-        return customerRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<CustomerResponse> getAllCustomer(Pageable pageable) {
+        return customerRepository.findAll(pageable).map(this::toResponse);
     }
 
     public CustomerResponse updateCustomer(UpdateCustomerRequest request, Long id) {

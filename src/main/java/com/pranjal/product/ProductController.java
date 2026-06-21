@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,12 +41,13 @@ public class ProductController {
     @PreAuthorize("hasAnyRole('OWNER', 'STAFF')")
     public ResponseEntity<ApiResponse<?>> getAllProducts(
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String sku
+            @RequestParam(required = false) String sku,
+            Pageable pageable
     ) {
         if (name == null && sku == null) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponse.success(productService
-                            .getAllProduct()));
+                            .getAllProduct(pageable)));
         }
 
         if (sku != null) {

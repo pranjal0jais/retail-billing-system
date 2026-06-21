@@ -1,6 +1,8 @@
 package com.pranjal.product;
 
 import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -14,9 +16,7 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     boolean existsBySku(String sku);
 
-    List<ProductEntity> findAllByIsActiveIsTrue();
-
-    Optional<ProductEntity> findAllBySkuAndIsActiveIsTrue(String sku);
+    Page<ProductEntity> findAllByIsActiveIsTrue(Pageable pageable);
 
     List<ProductEntity> findAllByNameIsContainingIgnoreCaseAndIsActiveIsTrue(String name);
 

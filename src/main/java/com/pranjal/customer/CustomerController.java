@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +31,9 @@ public class CustomerController {
 
     @Operation(summary = "List all customers")
     @GetMapping
-    public ResponseEntity<ApiResponse<?>> getAllCustomer() {
+    public ResponseEntity<ApiResponse<?>> getAllCustomer(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(customerService.getAllCustomer()));
+                .body(ApiResponse.success(customerService.getAllCustomer(pageable)));
     }
 
     @Operation(summary = "Search for a customer by phone number")

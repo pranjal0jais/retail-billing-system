@@ -10,6 +10,8 @@ import com.pranjal.product.dto.ProductResponse;
 import com.pranjal.product.dto.UpdateProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,11 +67,8 @@ public class ProductService {
         return toResponse(product);
     }
 
-    public List<ProductResponse> getAllProduct() {
-        return productRepository.findAllByIsActiveIsTrue()
-                .stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<ProductResponse> getAllProduct(Pageable pageable) {
+        return productRepository.findAllByIsActiveIsTrue(pageable).map(this::toResponse);
     }
 
     public List<ProductResponse> getAllByName(String name) {

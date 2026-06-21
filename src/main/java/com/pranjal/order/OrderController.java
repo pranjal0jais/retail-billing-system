@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -54,9 +55,9 @@ public class OrderController {
 
     @Operation(summary = "List all orders")
     @GetMapping()
-    public ResponseEntity<ApiResponse<?>> getAllOrders() {
+    public ResponseEntity<ApiResponse<?>> getAllOrders(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(orderService.getAllOrders()));
+                .body(ApiResponse.success(orderService.getAllOrders(pageable)));
     }
 
     @Operation(summary = "Confirm an order — applies discount, deducts stock")

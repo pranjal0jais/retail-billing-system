@@ -18,6 +18,8 @@ import com.pranjal.user.UserEntity;
 import com.pranjal.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -149,11 +151,8 @@ public class OrderService {
         return toResponse(order);
     }
 
-    public List<OrderResponse> getAllOrders() {
-        return orderRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<OrderResponse> getAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable).map(this::toResponse);
     }
 
     @Transactional
