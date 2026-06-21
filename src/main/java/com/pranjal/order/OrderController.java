@@ -5,6 +5,8 @@ import com.pranjal.order.dto.AddOrderItemRequest;
 import com.pranjal.order.dto.ConfirmOrderRequest;
 import com.pranjal.order.dto.CreateOrderRequest;
 import com.pranjal.order.service.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,10 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
+@Tag(name = "Orders", description = "Order lifecycle management")
 public class OrderController {
 
     private final OrderService orderService;
 
+    @Operation(summary = "Create a new order in DRAFT state")
     @PostMapping()
     public ResponseEntity<ApiResponse<?>> createOrder(@RequestBody @Valid CreateOrderRequest request,
                                                       @AuthenticationPrincipal Jwt jwt) {
@@ -30,6 +34,7 @@ public class OrderController {
                         orderService.createOrder(request, userId)));
     }
 
+    @Operation(summary = "Add an item to a DRAFT order")
     @PostMapping("/{orderId}/items")
     public ResponseEntity<ApiResponse<?>> addItem(@RequestBody @Valid AddOrderItemRequest request,
                                                   @PathVariable Long orderId) {
@@ -38,6 +43,7 @@ public class OrderController {
                         orderService.addItem(request, orderId)));
     }
 
+    @Operation(summary = "Remove an item from a DRAFT order")
     @DeleteMapping("/{orderId}/items/{itemId}")
     public ResponseEntity<ApiResponse<?>> removeItem(@PathVariable Long orderId,
                                                      @PathVariable Long itemId) {
@@ -46,12 +52,14 @@ public class OrderController {
                         orderService.removeItem(itemId, orderId)));
     }
 
+    @Operation(summary = "List all orders")
     @GetMapping()
     public ResponseEntity<ApiResponse<?>> getAllOrders() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(orderService.getAllOrders()));
     }
 
+    @Operation(summary = "Confirm an order — applies discount, deducts stock")
     @PostMapping("/{orderId}/confirm")
     public ResponseEntity<ApiResponse<?>> confirmOrder(@PathVariable Long orderId,
                                                        @RequestBody(required = false)ConfirmOrderRequest request) {
@@ -60,6 +68,7 @@ public class OrderController {
                         orderService.confirmOrder(orderId, request)));
     }
 
+    @Operation(summary = "Cancel an order — restores stock (Owner only)")
     @PostMapping("/{orderId}/cancel")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> cancelOrder(@PathVariable Long orderId) {
@@ -68,6 +77,7 @@ public class OrderController {
                         orderService.cancelOrder(orderId)));
     }
 
+    @Operation(summary = "Get full order details including line items")
     @GetMapping("/{orderId}")
     public ResponseEntity<ApiResponse<?>> getOrderById(@PathVariable Long orderId) {
         return ResponseEntity.status(HttpStatus.OK)

@@ -2,6 +2,8 @@ package com.pranjal.inventory;
 
 import com.pranjal.common.ApiResponse;
 import com.pranjal.inventory.dto.AdjustStockRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/inventory")
 @RequiredArgsConstructor
+@Tag(name = "Inventory", description = "Manual stock adjustments and audit log")
 public class InventoryController {
     private final InventoryService inventoryService;
 
+    @Operation(summary = "Manually adjust stock for a product")
     @PostMapping("/adjust")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> adjustStock(@RequestBody @Valid AdjustStockRequest request,
@@ -28,6 +32,7 @@ public class InventoryController {
                         inventoryService.adjustStock(request, userId)));
     }
 
+    @Operation(summary = "Get paginated inventory log, optionally filtered by product or date")
     @GetMapping("/logs")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> getAllLogs(Pageable pageable) {
@@ -35,6 +40,7 @@ public class InventoryController {
                 .body(ApiResponse.success(inventoryService.getLogs(pageable)));
     }
 
+    @Operation(summary = "Get stock movement history for a specific product")
     @GetMapping("/logs/{productId}")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> getAllLogsByProduct(@PathVariable Long productId,

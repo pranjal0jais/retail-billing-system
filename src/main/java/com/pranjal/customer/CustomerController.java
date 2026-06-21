@@ -3,6 +3,8 @@ package com.pranjal.customer;
 import com.pranjal.common.ApiResponse;
 import com.pranjal.customer.dto.CreateCustomerRequest;
 import com.pranjal.customer.dto.UpdateCustomerRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,10 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/customers")
 @RequiredArgsConstructor
+@Tag(name = "Customers", description = "Customer profile management")
 public class CustomerController {
 
     private final CustomerService customerService;
 
+    @Operation(summary = "Create a new customer")
     @PostMapping
     public ResponseEntity<ApiResponse<?>> createCustomer(@RequestBody @Valid CreateCustomerRequest request) {
 
@@ -24,24 +28,28 @@ public class CustomerController {
                         customerService.createCustomer(request)));
     }
 
+    @Operation(summary = "List all customers")
     @GetMapping
     public ResponseEntity<ApiResponse<?>> getAllCustomer() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(customerService.getAllCustomer()));
     }
 
+    @Operation(summary = "Search for a customer by phone number")
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<?>> getCustomerByPhone(@RequestParam String phone) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(customerService.getCustomerByPhone(phone)));
     }
 
+    @Operation(summary = "Create a new customer")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> getCustomerById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(customerService.getCustomerById(id)));
     }
 
+    @Operation(summary = "Update a customer by ID")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> updateCustomer(@RequestBody UpdateCustomerRequest request,
                                                          @PathVariable Long id) {

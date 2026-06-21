@@ -5,6 +5,8 @@ import com.pranjal.user.dto.CreateStaffRequest;
 import com.pranjal.user.dto.UpdatePasswordRequest;
 import com.pranjal.user.dto.UpdateUserRequest;
 import com.pranjal.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,9 +19,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
+@Tag(name = "Users", description = "Staff account management")
 public class UserController {
     private final UserService userService;
 
+    @Operation(summary = "Create a new staff account")
     @PostMapping
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> addStaff(@RequestBody @Valid CreateStaffRequest request) {
@@ -31,6 +35,7 @@ public class UserController {
                 );
     }
 
+    @Operation(summary = "List all staff accounts")
     @GetMapping
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> getAllStaff() {
@@ -42,6 +47,7 @@ public class UserController {
                 );
     }
 
+    @Operation(summary = "Get a staff account by ID")
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> getStaffById(@PathVariable Long id) {
@@ -53,6 +59,7 @@ public class UserController {
                 );
     }
 
+    @Operation(summary = "Update a staff account by ID")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> updateUser(@RequestBody @Valid UpdateUserRequest request,
@@ -65,6 +72,7 @@ public class UserController {
                 );
     }
 
+    @Operation(summary = "Activate a staff account")
     @PatchMapping("/{id}/activate")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> activateStaff(@PathVariable Long id) {
@@ -76,6 +84,7 @@ public class UserController {
                 );
     }
 
+    @Operation(summary = "Deactivate a staff account")
     @PatchMapping("/{id}/deactivate")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> deactivateStaff(@PathVariable Long id) {
@@ -87,6 +96,7 @@ public class UserController {
                 );
     }
 
+    @Operation(summary = "Update own profile")
     @PutMapping("/me")
     @PreAuthorize("hasAnyRole('OWNER', 'STAFF')")
     public ResponseEntity<ApiResponse<?>> updateStaff(@RequestBody @Valid UpdateUserRequest request,
@@ -100,6 +110,7 @@ public class UserController {
                 );
     }
 
+    @Operation(summary = "Change own password")
     @PatchMapping("/me/password")
     @PreAuthorize("hasAnyRole('OWNER', 'STAFF')")
     public ResponseEntity<ApiResponse<?>> changePassword(@RequestBody @Valid

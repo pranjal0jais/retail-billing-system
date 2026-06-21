@@ -3,6 +3,8 @@ package com.pranjal.product;
 import com.pranjal.common.ApiResponse;
 import com.pranjal.product.dto.CreateProductRequest;
 import com.pranjal.product.dto.UpdateProductRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,10 +17,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
+@Tag(name = "Products", description = "Product catalogue and stock management")
 public class ProductController {
 
     private final ProductService productService;
 
+
+    @Operation(summary = "Create a new product with initial stock")
     @PostMapping
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> createProduct(@RequestBody @Valid CreateProductRequest request,
@@ -30,6 +35,7 @@ public class ProductController {
                         productService.createProduct(request, userId)));
     }
 
+    @Operation(summary = "List all active products, optionally filtered by name or SKU")
     @GetMapping
     @PreAuthorize("hasAnyRole('OWNER', 'STAFF')")
     public ResponseEntity<ApiResponse<?>> getAllProducts(
@@ -53,6 +59,7 @@ public class ProductController {
                         .getAllByName(name)));
     }
 
+    @Operation(summary = "Get a product by ID")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('OWNER', 'STAFF')")
     public ResponseEntity<ApiResponse<?>> getProductById(@PathVariable Long id){
@@ -60,6 +67,7 @@ public class ProductController {
                 .body(ApiResponse.success(productService.getProductById(id)));
     }
 
+    @Operation(summary = "Update a product's details or price")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> updateProduct(@RequestBody @Valid UpdateProductRequest request,
@@ -69,6 +77,7 @@ public class ProductController {
                         productService.updateProduct(request, id)));
     }
 
+    @Operation(summary = "Soft-delete a product by ID")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> deleteProduct(@PathVariable Long id) {
@@ -77,6 +86,7 @@ public class ProductController {
                 .body(ApiResponse.success("Product deleted successfully"));
     }
 
+    @Operation(summary = "List all products below the low-stock threshold")
     @GetMapping("/low-stock")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<?>> getLowStock(){
