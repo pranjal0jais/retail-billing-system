@@ -12,7 +12,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-    show-sql: true
   security:
     oauth2:
       resourceserver:
@@ -25,5 +24,5 @@ razorpay:
     id: ${RAZORPAY_KEY_ID}
     secret: ${RAZORPAY_KEY_SECRET}
 app:
-  low-stock-threshold: 5
-  order-number-prefix: INV
+  low-stock-threshold: ${LOW_STOCK_THRESHOLD:5}
+  order-number-prefix: ${ORDER_NUMBER_PREFIX:INV}
