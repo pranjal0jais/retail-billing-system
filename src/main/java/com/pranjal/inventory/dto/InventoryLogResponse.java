@@ -1,7 +1,6 @@
 package com.pranjal.inventory.dto;
 
 import com.pranjal.inventory.ChangeType;
-import com.pranjal.product.ProductEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

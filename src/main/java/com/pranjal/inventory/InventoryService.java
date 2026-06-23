@@ -5,6 +5,7 @@ import com.pranjal.inventory.dto.InventoryLogResponse;
 import com.pranjal.product.ProductEntity;
 import com.pranjal.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
 
+    @CacheEvict(value = {"products", "lowStock"}, allEntries = true)
     public InventoryLogResponse adjustStock(AdjustStockRequest request, Long userId) {
         if (request.getQuantityChanged() == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity changed cannot be zero");

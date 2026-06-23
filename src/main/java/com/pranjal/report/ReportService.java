@@ -7,6 +7,7 @@ import com.pranjal.report.dto.DailySalesResponse;
 import com.pranjal.report.dto.SalesSummaryResponse;
 import com.pranjal.report.dto.TopSellingProductResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class ReportService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
 
+    @Cacheable(value = "reportSummary", key = "#startDate + '_' + #endDate")
     public SalesSummaryResponse getSalesSummary(LocalDate startDate, LocalDate endDate) {
         BigDecimal totalRevenue = orderRepository.getTotalRevenue(startDate, endDate);
         Long totalOrders = orderRepository.countByOrderStatusAndCreatedAtBetween(OrderStatus.PAID,
@@ -40,6 +42,7 @@ public class ReportService {
                 .build();
     }
 
+    @Cacheable(value = "reportDaily", key = "#startDate + '_' + #endDate")
     public List<DailySalesResponse> getDailySales(LocalDate startDate, LocalDate endDate) {
         List<Object[]> objects = new ArrayList<>(orderRepository.getDailySales(startDate, endDate));
         return objects
@@ -48,6 +51,7 @@ public class ReportService {
                 .toList();
     }
 
+    @Cacheable(value = "reportTopSelling", key = "#startDate + '_' + #endDate + '_' + #limit")
     public List<TopSellingProductResponse> getTopSellingProducts(LocalDate startDate,
                                                                  LocalDate endDate,
                                                                  int limit) {

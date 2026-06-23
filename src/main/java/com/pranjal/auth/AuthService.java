@@ -1,11 +1,11 @@
 package com.pranjal.auth;
 
+import com.pranjal.auth.dto.AuthResponse;
+import com.pranjal.auth.dto.UserProfileResponse;
 import com.pranjal.security.JwtService;
 import com.pranjal.user.Role;
 import com.pranjal.user.UserEntity;
 import com.pranjal.user.UserRepository;
-import com.pranjal.auth.dto.AuthResponse;
-import com.pranjal.auth.dto.UserProfileResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

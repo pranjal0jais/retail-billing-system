@@ -1,10 +1,10 @@
 package com.pranjal.auth;
 
-import com.pranjal.common.ApiResponse;
 import com.pranjal.auth.dto.AuthResponse;
 import com.pranjal.auth.dto.LoginRequest;
 import com.pranjal.auth.dto.RegisterRequest;
 import com.pranjal.auth.dto.UserProfileResponse;
+import com.pranjal.common.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

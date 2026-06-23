@@ -18,6 +18,7 @@ import com.pranjal.user.UserEntity;
 import com.pranjal.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -155,6 +155,7 @@ public class OrderService {
         return orderRepository.findAll(pageable).map(this::toResponse);
     }
 
+    @CacheEvict(value = {"products", "lowStock"}, allEntries = true)
     @Transactional
     public OrderResponse confirmOrder(Long orderId, ConfirmOrderRequest request) {
         if (request.getDiscountType() != null && request.getDiscountValue() == null) {
@@ -228,6 +229,7 @@ public class OrderService {
         return toResponse(order);
     }
 
+    @CacheEvict(value = {"products", "lowStock"}, allEntries = true)
     @Transactional
     public OrderResponse cancelOrder(Long orderId) {
         OrderEntity order = orderRepository.findById(orderId)

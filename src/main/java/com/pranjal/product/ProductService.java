@@ -10,6 +10,8 @@ import com.pranjal.product.dto.ProductResponse;
 import com.pranjal.product.dto.UpdateProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,7 @@ public class ProductService {
     @Value("${app.low-stock-threshold}")
     private Integer lowStockLimit;
 
+    @CacheEvict(value = {"products", "lowStock"}, allEntries = true)
     @Transactional
     public ProductResponse createProduct(CreateProductRequest request, Long userId) {
         if (productRepository.existsBySku(request.getSku())) {
@@ -67,10 +70,12 @@ public class ProductService {
         return toResponse(product);
     }
 
+    @Cacheable("products")
     public Page<ProductResponse> getAllProduct(Pageable pageable) {
         return productRepository.findAllByIsActiveIsTrue(pageable).map(this::toResponse);
     }
 
+    @Cacheable(value = "products", key = "#name")
     public List<ProductResponse> getAllByName(String name) {
         return productRepository.findAllByNameIsContainingIgnoreCaseAndIsActiveIsTrue(name)
                 .stream()
@@ -78,6 +83,7 @@ public class ProductService {
                 .toList();
     }
 
+    @Cacheable(value = "products", key = "#sku")
     public ProductResponse getBySku(String sku) {
         ProductEntity product = productRepository.findBySkuAndIsActiveTrue(sku)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND
@@ -86,6 +92,7 @@ public class ProductService {
         return toResponse(product);
     }
 
+    @Cacheable(value = "products", key = "#id")
     public ProductResponse getProductById(Long id) {
         ProductEntity product = productRepository.findByIdAndIsActiveIsTrue(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND
@@ -94,6 +101,7 @@ public class ProductService {
         return toResponse(product);
     }
 
+    @CacheEvict(value = {"products", "lowStock"}, allEntries = true)
     public ProductResponse updateProduct(UpdateProductRequest request, Long productId) {
         ProductEntity product = productRepository.findByIdAndIsActiveIsTrue(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND
@@ -113,6 +121,7 @@ public class ProductService {
         return toResponse(product);
     }
 
+    @CacheEvict(value = {"products", "lowStock"}, allEntries = true)
     public void deleteProduct(Long id) {
         ProductEntity product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND
@@ -122,6 +131,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    @Cacheable("lowStock")
     public List<ProductResponse> getLowStockProducts() {
         return productRepository.findAllByStockQuantityLessThanEqualAndIsActiveIsTrue(lowStockLimit)
                 .stream()
