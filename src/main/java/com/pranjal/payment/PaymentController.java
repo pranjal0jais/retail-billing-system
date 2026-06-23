@@ -1,6 +1,7 @@
 package com.pranjal.payment;
 
 import com.pranjal.common.ApiResponse;
+import com.pranjal.payment.dto.PaymentResponse;
 import com.pranjal.payment.dto.RazorpayConfirmRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +24,7 @@ public class PaymentController {
 
     @Operation(summary = "Record a cash payment for an order")
     @PostMapping("/orders/{orderId}/cash")
-    public ResponseEntity<ApiResponse<?>> recordCashPayment(
+    public ResponseEntity<ApiResponse<PaymentResponse>> recordCashPayment(
             @PathVariable Long orderId) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Cash payment recorded successfully",
@@ -32,7 +33,7 @@ public class PaymentController {
 
     @Operation(summary = "Initiate a Razorpay payment and get the QR code URL")
     @PostMapping("/orders/{orderId}/razorpay/initiate")
-    public ResponseEntity<ApiResponse<?>> initiateRazorpayQr(
+    public ResponseEntity<ApiResponse<PaymentResponse>> initiateRazorpayQr(
             @PathVariable Long orderId) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Razorpay QR initiated successfully",
@@ -41,7 +42,7 @@ public class PaymentController {
 
     @Operation(summary = "Confirm a Razorpay payment after QR scan verification")
     @PostMapping("/orders/{orderId}/razorpay/confirm")
-    public ResponseEntity<ApiResponse<?>> confirmRazorpayPayment(
+    public ResponseEntity<ApiResponse<PaymentResponse>> confirmRazorpayPayment(
             @PathVariable Long orderId,
             @RequestBody @Valid RazorpayConfirmRequest request) {
         return ResponseEntity.status(HttpStatus.OK)
@@ -52,7 +53,7 @@ public class PaymentController {
     @Operation(summary = "Get payment details by payment ID")
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> getPaymentById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<PaymentResponse>> getPaymentById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(paymentService.getPaymentById(id)));
     }

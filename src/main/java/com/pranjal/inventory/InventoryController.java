@@ -2,10 +2,12 @@ package com.pranjal.inventory;
 
 import com.pranjal.common.ApiResponse;
 import com.pranjal.inventory.dto.AdjustStockRequest;
+import com.pranjal.inventory.dto.InventoryLogResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,7 @@ public class InventoryController {
     @Operation(summary = "Manually adjust stock for a product")
     @PostMapping("/adjust")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> adjustStock(@RequestBody @Valid AdjustStockRequest request,
+    public ResponseEntity<ApiResponse<InventoryLogResponse>> adjustStock(@RequestBody @Valid AdjustStockRequest request,
                                                       @AuthenticationPrincipal Jwt jwt) {
         Long userId = jwt.getClaim("userId");
         return ResponseEntity.status(HttpStatus.OK)
@@ -37,7 +39,7 @@ public class InventoryController {
     @Operation(summary = "Get paginated inventory log, optionally filtered by product or date")
     @GetMapping("/logs")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> getAllLogs(Pageable pageable) {
+    public ResponseEntity<ApiResponse<Page<InventoryLogResponse>>> getAllLogs(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(inventoryService.getLogs(pageable)));
     }
@@ -45,7 +47,7 @@ public class InventoryController {
     @Operation(summary = "Get stock movement history for a specific product")
     @GetMapping("/logs/{productId}")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> getAllLogsByProduct(@PathVariable Long productId,
+    public ResponseEntity<ApiResponse<Page<InventoryLogResponse>>> getAllLogsByProduct(@PathVariable Long productId,
                                                               Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(inventoryService.getLogsByProductId(productId, pageable)));

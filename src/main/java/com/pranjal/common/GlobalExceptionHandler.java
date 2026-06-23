@@ -1,5 +1,6 @@
 package com.pranjal.common;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -12,10 +13,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<?>> handleValidation(MethodArgumentNotValidException ex) {
+        log.error(ex.getMessage());
         String message = ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(FieldError::getDefaultMessage)
@@ -26,34 +29,38 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ApiResponse<?>> handleConflict(IllegalStateException ex) {
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(ex.getMessage()));
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ApiResponse<?>> handleNotFound(UsernameNotFoundException ex) {
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("Invalid credentials"));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<?>> handleAccessDenied(AccessDeniedException ex) {
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.error("Access denied"));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleGeneric(Exception ex) {
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error("Something went wrong"));
     }
 
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<ApiResponse<?>> handleDisabled(DisabledException ex) {
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ApiResponse.error("Account is disabled"));
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ApiResponse<?>> handleResponseStatus(
-            ResponseStatusException ex) {
-
+    public ResponseEntity<ApiResponse<?>> handleResponseStatus(ResponseStatusException ex) {
+        log.error(ex.getMessage());
         return ResponseEntity
                 .status(ex.getStatusCode())
                 .body(ApiResponse.error(ex.getReason()));

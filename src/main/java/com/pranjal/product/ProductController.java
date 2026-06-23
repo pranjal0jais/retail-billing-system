@@ -2,11 +2,13 @@ package com.pranjal.product;
 
 import com.pranjal.common.ApiResponse;
 import com.pranjal.product.dto.CreateProductRequest;
+import com.pranjal.product.dto.ProductResponse;
 import com.pranjal.product.dto.UpdateProductRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Validated
 @RestController
@@ -29,7 +33,7 @@ public class ProductController {
     @Operation(summary = "Create a new product with initial stock")
     @PostMapping
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> createProduct(@RequestBody @Valid CreateProductRequest request,
+    public ResponseEntity<ApiResponse<ProductResponse>> createProduct(@RequestBody @Valid CreateProductRequest request,
                                                         @AuthenticationPrincipal Jwt jwt) {
 
         Long userId = jwt.getClaim("userId");
@@ -38,35 +42,43 @@ public class ProductController {
                         productService.createProduct(request, userId)));
     }
 
-    @Operation(summary = "List all active products, optionally filtered by name or SKU")
+    @Operation(summary = "List all active products")
     @GetMapping
     @PreAuthorize("hasAnyRole('OWNER', 'STAFF')")
-    public ResponseEntity<ApiResponse<?>> getAllProducts(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String sku,
+    public ResponseEntity<ApiResponse<Page<ProductResponse>>> getAllProducts(
             Pageable pageable
     ) {
-        if (name == null && sku == null) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponse.success(productService
-                            .getAllProduct(pageable)));
-        }
+        return ResponseEntity.ok(
+                ApiResponse.success(productService.getAllProduct(pageable))
+        );
+    }
 
-        if (sku != null) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponse.success(productService
-                            .getBySku(sku)));
-        }
+    @Operation(summary = "Search products by name")
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('OWNER', 'STAFF')")
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getProductsByName(
+            @RequestParam String name
+    ) {
+        return ResponseEntity.ok(
+                ApiResponse.success(productService.getAllByName(name))
+        );
+    }
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(productService
-                        .getAllByName(name)));
+    @Operation(summary = "Get product by SKU")
+    @GetMapping("/sku/{sku}")
+    @PreAuthorize("hasAnyRole('OWNER', 'STAFF')")
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductBySku(
+            @PathVariable String sku
+    ) {
+        return ResponseEntity.ok(
+                ApiResponse.success(productService.getBySku(sku))
+        );
     }
 
     @Operation(summary = "Get a product by ID")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('OWNER', 'STAFF')")
-    public ResponseEntity<ApiResponse<?>> getProductById(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(productService.getProductById(id)));
     }
@@ -74,7 +86,7 @@ public class ProductController {
     @Operation(summary = "Update a product's details or price")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> updateProduct(@RequestBody @Valid UpdateProductRequest request,
+    public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(@RequestBody @Valid UpdateProductRequest request,
                                                         @PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Product updated successfully",
@@ -93,7 +105,7 @@ public class ProductController {
     @Operation(summary = "List all products below the low-stock threshold")
     @GetMapping("/low-stock")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> getLowStock(){
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getLowStock(){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(productService.getLowStockProducts()));
     }

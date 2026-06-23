@@ -1,6 +1,9 @@
 package com.pranjal.report;
 
 import com.pranjal.common.ApiResponse;
+import com.pranjal.report.dto.DailySalesResponse;
+import com.pranjal.report.dto.SalesSummaryResponse;
+import com.pranjal.report.dto.TopSellingProductResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Validated
 @RestController
@@ -27,8 +31,8 @@ public class ReportController {
     @Operation(summary = "Get sales summary — revenue, order count, average order value for a date range")
     @PreAuthorize("hasRole('OWNER')")
     @GetMapping("/sales/summary")
-    public ResponseEntity<ApiResponse<?>> getSalesSummary(@RequestParam LocalDate startDate,
-                                                          @RequestParam LocalDate endDate) {
+    public ResponseEntity<ApiResponse<SalesSummaryResponse>> getSalesSummary(@RequestParam LocalDate startDate,
+                                                                             @RequestParam LocalDate endDate) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(reportService
                         .getSalesSummary(startDate, endDate)));
@@ -37,8 +41,8 @@ public class ReportController {
     @Operation(summary = "Get day-by-day sales breakdown for a date range")
     @PreAuthorize("hasRole('OWNER')")
     @GetMapping("/sales/daily")
-    public ResponseEntity<ApiResponse<?>> getDailySales(@RequestParam LocalDate startDate,
-                                                          @RequestParam LocalDate endDate) {
+    public ResponseEntity<ApiResponse<List<DailySalesResponse>>> getDailySales(@RequestParam LocalDate startDate,
+                                                                               @RequestParam LocalDate endDate) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(reportService
                         .getDailySales(startDate, endDate)));
@@ -47,9 +51,9 @@ public class ReportController {
     @Operation(summary = "Get top N products by quantity sold in a date range")
     @PreAuthorize("hasRole('OWNER')")
     @GetMapping("/products/top-selling")
-    public ResponseEntity<ApiResponse<?>> getTopsSellingProduct(@RequestParam LocalDate startDate,
-                                                          @RequestParam LocalDate endDate,
-                                                                @RequestParam(defaultValue = "10") int limit) {
+    public ResponseEntity<ApiResponse<List<TopSellingProductResponse>>> getTopsSellingProduct(@RequestParam LocalDate startDate,
+                                                                                              @RequestParam LocalDate endDate,
+                                                                                              @RequestParam(defaultValue = "10") int limit) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(reportService
                         .getTopSellingProducts(startDate, endDate, limit)));

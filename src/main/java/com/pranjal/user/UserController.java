@@ -4,6 +4,7 @@ import com.pranjal.common.ApiResponse;
 import com.pranjal.user.dto.CreateStaffRequest;
 import com.pranjal.user.dto.UpdatePasswordRequest;
 import com.pranjal.user.dto.UpdateUserRequest;
+import com.pranjal.user.dto.UserSummaryResponse;
 import com.pranjal.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,6 +18,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Validated
 @RestController
 @RequestMapping("/api/v1/users")
@@ -28,7 +31,7 @@ public class UserController {
     @Operation(summary = "Create a new staff account")
     @PostMapping
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> addStaff(@RequestBody @Valid CreateStaffRequest request) {
+    public ResponseEntity<ApiResponse<UserSummaryResponse>> addStaff(@RequestBody @Valid CreateStaffRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse
                         .success("New staff added successfully",
@@ -40,7 +43,7 @@ public class UserController {
     @Operation(summary = "List all staff accounts")
     @GetMapping
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> getAllStaff() {
+    public ResponseEntity<ApiResponse<List<UserSummaryResponse>>> getAllStaff() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse
                         .success(
@@ -52,7 +55,7 @@ public class UserController {
     @Operation(summary = "Get a staff account by ID")
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> getStaffById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<UserSummaryResponse>> getStaffById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse
                         .success(
@@ -64,7 +67,7 @@ public class UserController {
     @Operation(summary = "Update a staff account by ID")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> updateUser(@RequestBody @Valid UpdateUserRequest request,
+    public ResponseEntity<ApiResponse<UserSummaryResponse>> updateUser(@RequestBody @Valid UpdateUserRequest request,
                                                      @PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse
@@ -77,7 +80,7 @@ public class UserController {
     @Operation(summary = "Activate a staff account")
     @PatchMapping("/{id}/activate")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> activateStaff(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<UserSummaryResponse>> activateStaff(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse
                         .success("Staff activated successfully",
@@ -89,7 +92,7 @@ public class UserController {
     @Operation(summary = "Deactivate a staff account")
     @PatchMapping("/{id}/deactivate")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<?>> deactivateStaff(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<UserSummaryResponse>> deactivateStaff(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse
                         .success("Staff deactivated successfully",
@@ -101,7 +104,7 @@ public class UserController {
     @Operation(summary = "Update own profile")
     @PutMapping("/me")
     @PreAuthorize("hasAnyRole('OWNER', 'STAFF')")
-    public ResponseEntity<ApiResponse<?>> updateStaff(@RequestBody @Valid UpdateUserRequest request,
+    public ResponseEntity<ApiResponse<UserSummaryResponse>> updateStaff(@RequestBody @Valid UpdateUserRequest request,
                                                       @AuthenticationPrincipal Jwt jwt) {
         Long id = jwt.getClaim("userId");
         return ResponseEntity.status(HttpStatus.OK)
@@ -115,7 +118,7 @@ public class UserController {
     @Operation(summary = "Change own password")
     @PatchMapping("/me/password")
     @PreAuthorize("hasAnyRole('OWNER', 'STAFF')")
-    public ResponseEntity<ApiResponse<?>> changePassword(@RequestBody @Valid
+    public ResponseEntity<ApiResponse<UserSummaryResponse>> changePassword(@RequestBody @Valid
                                                          UpdatePasswordRequest request,
                                                          @AuthenticationPrincipal Jwt jwt) {
         Long id = jwt.getClaim("userId");
