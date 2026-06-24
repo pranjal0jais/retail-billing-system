@@ -262,7 +262,7 @@ public class OrderService {
                         .quantityChanged(i.getQuantity())
                         .quantityAfter(p.getStockQuantity())
                         .referenceId(orderId)
-                        .note("cancelled for order: " + order.getOrderNumber())
+                        .note("Cancelled for order: " + order.getOrderNumber())
                         .createdBy(order.getCreatedBy().getId())
                         .build();
                 inventoryRepository.save(log);
@@ -278,7 +278,7 @@ public class OrderService {
                 .orderId(entity.getId())
                 .orderNumber(entity.getOrderNumber())
                 .customerId(entity.getCustomer() != null ? entity.getCustomer().getId() : null)
-                .createdBy(entity.getCreatedBy().getId())
+                .createdBy(entity.getCreatedBy().getName())
                 .orderStatus(entity.getOrderStatus())
                 .subtotal(entity.getSubTotal())
                 .discountType(entity.getDiscountType())

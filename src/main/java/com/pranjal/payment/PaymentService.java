@@ -180,4 +180,11 @@ public class PaymentService {
         }
         return order.get("id");
     }
+
+    public PaymentResponse getPaymentByOrderId(Long orderId) {
+        PaymentEntity payment = paymentRepository.findByOrder_Id(orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "No payment initiated for this order"));
+        return toResponse(payment);
+    }
 }

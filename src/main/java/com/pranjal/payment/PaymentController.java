@@ -57,4 +57,12 @@ public class PaymentController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(paymentService.getPaymentById(id)));
     }
+
+    @Operation(summary = "Get payment details by payment ID")
+    @GetMapping("orders/{orderId}")
+    @PreAuthorize("hasRole('OWNER')")
+    public ResponseEntity<ApiResponse<PaymentResponse>> getPaymentByOrderId(@PathVariable Long orderId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(paymentService.getPaymentByOrderId(orderId)));
+    }
 }

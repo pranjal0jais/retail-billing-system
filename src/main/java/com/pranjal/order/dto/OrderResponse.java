@@ -19,7 +19,7 @@ public class OrderResponse {
     private Long orderId;
     private String orderNumber;
     private Long customerId;
-    private Long createdBy;
+    private String createdBy;
     private OrderStatus orderStatus;
     private BigDecimal subtotal;
     private DiscountType discountType;
