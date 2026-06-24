@@ -32,7 +32,7 @@ public class ProductService {
     @Value("${app.low-stock-threshold}")
     private Integer lowStockLimit;
 
-    @CacheEvict(value = {"products", "lowStock"}, allEntries = true)
+    @CacheEvict(value = {"products", "lowStocks"}, allEntries = true)
     @Transactional
     public ProductResponse createProduct(CreateProductRequest request, Long userId) {
         if (productRepository.existsBySku(request.getSku())) {
@@ -101,7 +101,7 @@ public class ProductService {
         return toResponse(product);
     }
 
-    @CacheEvict(value = {"products", "lowStock"}, allEntries = true)
+    @CacheEvict(value = {"products", "lowStocks"}, allEntries = true)
     public ProductResponse updateProduct(UpdateProductRequest request, Long productId) {
         ProductEntity product = productRepository.findByIdAndIsActiveIsTrue(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND
@@ -121,7 +121,7 @@ public class ProductService {
         return toResponse(product);
     }
 
-    @CacheEvict(value = {"products", "lowStock"}, allEntries = true)
+    @CacheEvict(value = {"products", "lowStocks"}, allEntries = true)
     public void deleteProduct(Long id) {
         ProductEntity product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND
@@ -131,7 +131,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    @Cacheable("lowStock")
+    @Cacheable("lowStocks")
     public List<ProductResponse> getLowStockProducts() {
         return productRepository.findAllByStockQuantityLessThanEqualAndIsActiveIsTrue(lowStockLimit)
                 .stream()

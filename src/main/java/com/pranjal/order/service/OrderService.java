@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -155,7 +156,7 @@ public class OrderService {
         return orderRepository.findAll(pageable).map(this::toResponse);
     }
 
-    @CacheEvict(value = {"products", "lowStock"}, allEntries = true)
+    @CacheEvict(value = {"products", "lowStocks"}, allEntries = true)
     @Transactional
     public OrderResponse confirmOrder(Long orderId, ConfirmOrderRequest request) {
         if (request.getDiscountType() != null && request.getDiscountValue() == null) {
@@ -229,7 +230,7 @@ public class OrderService {
         return toResponse(order);
     }
 
-    @CacheEvict(value = {"products", "lowStock"}, allEntries = true)
+    @CacheEvict(value = {"products", "lowStocks"}, allEntries = true)
     @Transactional
     public OrderResponse cancelOrder(Long orderId) {
         OrderEntity order = orderRepository.findById(orderId)
@@ -310,6 +311,13 @@ public class OrderService {
                         "Order not found"));
 
         return toResponse(order);
+    }
+
+    public List<OrderResponse> getOrderByCustomerId(Long customerId) {
+        return orderRepository.findAllByCustomer_Id(customerId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     private String generateOrderNumber() {

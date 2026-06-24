@@ -18,7 +18,7 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
 
-    @CacheEvict(value = {"products", "lowStock"}, allEntries = true)
+    @CacheEvict(value = {"products", "lowStocks"}, allEntries = true)
     public InventoryLogResponse adjustStock(AdjustStockRequest request, Long userId) {
         if (request.getQuantityChanged() == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity changed cannot be zero");

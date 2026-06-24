@@ -4,6 +4,8 @@ import com.pranjal.common.ApiResponse;
 import com.pranjal.customer.dto.CreateCustomerRequest;
 import com.pranjal.customer.dto.CustomerResponse;
 import com.pranjal.customer.dto.UpdateCustomerRequest;
+import com.pranjal.order.dto.OrderResponse;
+import com.pranjal.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -15,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Validated
 @RestController
 @RequestMapping("/api/v1/customers")
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final OrderService orderService;
 
     @Operation(summary = "Create a new customer")
     @PostMapping
@@ -57,9 +62,17 @@ public class CustomerController {
     @Operation(summary = "Update a customer by ID")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<CustomerResponse>> updateCustomer(@RequestBody UpdateCustomerRequest request,
-                                                         @PathVariable Long id) {
+                                                                        @PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Customer updated successfully",
                         customerService.updateCustomer(request, id)));
     }
+
+    @Operation(summary = "Get order history for a customer")
+    @GetMapping("/{id}/orders")
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getCustomerOrders(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(orderService.getOrderByCustomerId(id)));
+    }
+
 }
