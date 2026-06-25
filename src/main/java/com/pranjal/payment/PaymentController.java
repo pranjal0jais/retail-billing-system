@@ -2,6 +2,7 @@ package com.pranjal.payment;
 
 import com.pranjal.common.ApiResponse;
 import com.pranjal.payment.dto.PaymentResponse;
+import com.pranjal.payment.dto.PaymentSummaryResponse;
 import com.pranjal.payment.dto.RazorpayConfirmRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,8 +61,8 @@ public class PaymentController {
 
     @Operation(summary = "Get payment details by payment ID")
     @GetMapping("orders/{orderId}")
-    @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<PaymentResponse>> getPaymentByOrderId(@PathVariable Long orderId) {
+    @PreAuthorize("hasAnyRole('OWNER', 'STAFF')")
+    public ResponseEntity<ApiResponse<PaymentSummaryResponse>> getPaymentByOrderId(@PathVariable Long orderId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(paymentService.getPaymentByOrderId(orderId)));
     }

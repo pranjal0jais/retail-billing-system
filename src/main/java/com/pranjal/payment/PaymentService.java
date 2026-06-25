@@ -4,6 +4,7 @@ import com.pranjal.order.OrderStatus;
 import com.pranjal.order.entity.OrderEntity;
 import com.pranjal.order.repository.OrderRepository;
 import com.pranjal.payment.dto.PaymentResponse;
+import com.pranjal.payment.dto.PaymentSummaryResponse;
 import com.pranjal.payment.dto.RazorpayConfirmRequest;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
@@ -181,10 +182,15 @@ public class PaymentService {
         return order.get("id");
     }
 
-    public PaymentResponse getPaymentByOrderId(Long orderId) {
+    public PaymentSummaryResponse getPaymentByOrderId(Long orderId) {
         PaymentEntity payment = paymentRepository.findByOrder_Id(orderId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "No payment initiated for this order"));
-        return toResponse(payment);
+        return PaymentSummaryResponse.builder()
+                .orderId(orderId)
+                .paymentMethod(payment.getPaymentMethod())
+                .paymentStatus(payment.getPaymentStatus())
+                .paidAt(payment.getPaidAt())
+                .build();
     }
 }

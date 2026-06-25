@@ -19,6 +19,9 @@ spring:
           secret: ${JWT_SECRET}
           expiration-ms: ${JWT_EXPIRATION_MS}
 
+server:
+  port: ${PORT:8080}
+
 razorpay:
   key:
     id: ${RAZORPAY_KEY_ID}
